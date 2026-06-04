@@ -1,0 +1,2 @@
+[server]
+maxUploadSize = 2000  # Limit ko 2000MB (2GB) kar diya
