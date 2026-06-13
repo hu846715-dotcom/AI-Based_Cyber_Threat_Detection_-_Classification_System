@@ -649,6 +649,7 @@ else:
 
         with st.spinner(f"📡 Sniffing packets on **{selected_label}** for {capture_duration}s... Open a browser and visit websites now."):
             try:
+                from scapy.all import sniff as scapy_sniff
                 packets = capture_packets_scapy(selected_interface, capture_duration)
 
                 if len(packets) == 0:
@@ -669,6 +670,20 @@ else:
                         preds    = _model.predict(X_scaled)
                         display_df['AI_Prediction'] = [classify_label(p) for p in preds]
                         st.session_state['live_df'] = display_df
+
+            except (PermissionError, OSError, ImportError) as e:
+                st.session_state['capture_error'] = None
+                st.session_state['capture_running'] = False
+                st.session_state['capture_done'] = True
+                st.markdown("""
+                <div style="background:rgba(248,81,73,0.1);border-left:4px solid #f85149;border-radius:8px;padding:20px;">
+                    <h4 style="color:#f85149;">☁️ Cloud Environment Detected</h4>
+                    <p style="color:#c9d1d9;">Live packet capture requires Administrator privileges and Npcap,
+                    which are not available on cloud servers.<br><br>
+                    <b>To use Live Capture:</b> Run this app locally on your PC as Administrator.<br>
+                    <b>For cloud demo:</b> Switch to <b>Upload Security Log File</b> mode above.</p>
+                </div>""", unsafe_allow_html=True)
+                st.stop()
 
             except Exception as e:
                 st.session_state['capture_error'] = f"Capture failed: {str(e)}"
