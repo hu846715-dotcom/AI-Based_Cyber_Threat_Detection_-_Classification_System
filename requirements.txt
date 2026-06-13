@@ -7,3 +7,4 @@ seaborn
 joblib
 fpdf2
 psutil
+scapy
