@@ -27,28 +27,131 @@ except ImportError:
 
 st.set_page_config(page_title="AI Based Cyber Threat Detection & Classification System", layout="wide", page_icon="🛡️")
 
+st.markdown("<style>.stApp { background-color: red !important; }</style>", unsafe_allow_html=True)
+
 st.markdown("""
     <style>
-    .main { background-color: #06090f; color: #c9d1d9; }
-    .stApp { background-color: #06090f; }
-    h1, h2, h3 { color: #58a6ff !important; font-family: 'Courier New', Courier, monospace; }
-    .stButton>button { width: 100%; background: linear-gradient(135deg, #1f6feb 0%, #114ba8 100%); color: white; font-weight: bold; border: none; border-radius: 4px; box-shadow: 0px 4px 10px rgba(31,111,235,0.3); }
-    .stButton>button:hover { background: #58a6ff; color: #06090f; }
-    div.stTabs [data-baseweb="tab-list"] { gap: 24px; background-color: #0d1117; padding: 10px; border-radius: 8px; border: 1px solid #30363d; }
-    div.stTabs [data-baseweb="tab"] { font-size: 16px; font-weight: bold; color: #8b949e; }
-    div.stTabs [data-baseweb="tab"]:hover { color: #58a6ff; }
-    div.stTabs [data-baseweb="tab"][aria-selected="true"] { color: #58a6ff !important; border-bottom-color: #58a6ff !important; }
-    .metric-box { background-color: #0d1117; border: 1px solid #30363d; padding: 15px; border-radius: 8px; text-align: center; }
-    .alert-banner { background: linear-gradient(90deg, rgba(248,81,73,0.15) 0%, rgba(6,9,15,0) 100%); border-left: 5px solid #f85149; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
-    .safe-banner { background: linear-gradient(90deg, rgba(56,139,253,0.15) 0%, rgba(6,9,15,0) 100%); border-left: 5px solid #388bfd; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
-    .narrative-box { background: #0d1117; border: 1px solid #388bfd; border-radius: 8px; padding: 20px; margin-top: 15px; font-family: 'Courier New', Courier, monospace; font-size: 13px; color: #c9d1d9; white-space: pre-wrap; }
-    .chain-event { background: #0d1117; border-left: 3px solid #58a6ff; padding: 10px 15px; margin: 6px 0; border-radius: 0 6px 6px 0; font-size: 13px; }
-    .anomaly-badge { background: rgba(255,158,59,0.15); border: 1px solid #ff9e3b; color: #ff9e3b; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --critical: #E24B4A;
+      --high: #BA7517;
+      --safe: #639922;
+      --bg-dark: #0d1117;
+      --bg-darker: #06090f;
+      --accent: #58a6ff;
+      --border-subtle: rgba(255,255,255,0.1);
+      --text-primary: #c9d1d9;
+      --text-secondary: #8b949e;
+      --glow: 0 0 18px rgba(88,166,255,0.35);
+      --glow-critical: 0 0 16px rgba(226,75,74,0.45);
+    }
+
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .main, .stApp {
+      background-color: var(--bg-darker) !important;
+      background-image:
+        linear-gradient(rgba(88,166,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(88,166,255,0.04) 1px, transparent 1px) !important;
+      background-size: 38px 38px !important;
+      color: var(--text-primary) !important;
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+
+    [data-testid="stHeader"] { background-color: var(--bg-darker) !important; }
+    [data-testid="stToolbar"] { background-color: transparent !important; }
+    [data-testid="stSidebar"] {
+      background-color: var(--bg-dark) !important;
+      border-right: 1px solid var(--border-subtle);
+    }
+    [data-testid="stSidebar"] * { color: var(--text-primary) !important; }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif !important;
+      color: var(--accent) !important;
+      text-shadow: var(--glow);
+      letter-spacing: 1px;
+    }
+    h2, h3 { color: var(--accent) !important; font-family: 'Orbitron', sans-serif !important; }
+
+    .stButton>button {
+      width: 100%;
+      background: linear-gradient(135deg, #1f6feb, #58a6ff);
+      color: white; font-weight: bold;
+      border: 1px solid rgba(88,166,255,0.4);
+      border-radius: 6px;
+      box-shadow: var(--glow);
+      transition: all 0.2s ease;
+    }
+    .stButton>button:hover {
+      box-shadow: 0 0 26px rgba(88,166,255,0.6);
+      transform: translateY(-1px);
+    }
+
+    div.stTabs [data-baseweb="tab-list"] {
+      gap: 24px; background-color: var(--bg-dark); padding: 10px;
+      border-radius: 8px; border: 1px solid var(--border-subtle);
+    }
+    div.stTabs [data-baseweb="tab"] { font-size: 15px; font-weight: bold; color: var(--text-secondary); }
+    div.stTabs [data-baseweb="tab"][aria-selected="true"] {
+      color: var(--accent) !important;
+      border-bottom-color: var(--accent) !important;
+      text-shadow: 0 0 8px rgba(88,166,255,0.5);
+    }
+
+    [data-testid="stMetric"] {
+      background: rgba(13,17,23,0.7);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(88,166,255,0.2);
+      border-radius: 10px; padding: 14px;
+      transition: box-shadow 0.2s ease;
+    }
+    [data-testid="stMetric"]:hover { box-shadow: var(--glow); }
+
+    .alert-banner {
+      background-color: var(--bg-dark); border-left: 3px solid var(--critical);
+      padding: 15px; border-radius: 4px; margin-bottom: 20px;
+      box-shadow: var(--glow-critical);
+      animation: pulse-border 2.5s infinite;
+    }
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 10px rgba(226,75,74,0.3); }
+      50% { box-shadow: 0 0 22px rgba(226,75,74,0.6); }
+    }
+    .safe-banner {
+      background-color: var(--bg-dark); border-left: 3px solid var(--safe);
+      padding: 15px; border-radius: 4px; margin-bottom: 20px;
+      box-shadow: 0 0 14px rgba(99,153,34,0.3);
+    }
+
+    .narrative-box {
+      background-color: var(--bg-dark); border: 1px solid var(--border-subtle);
+      border-radius: 8px; padding: 20px; margin-top: 15px;
+      font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      color: var(--text-primary); white-space: pre-wrap;
+    }
+    .chain-event {
+      background-color: var(--bg-dark); border-left: 2px solid var(--accent);
+      padding: 10px 15px; margin: 6px 0; border-radius: 0 6px 6px 0; font-size: 13px;
+    }
+    .anomaly-badge {
+      background-color: var(--bg-dark); border: 1px solid var(--high); color: var(--high);
+      padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;
+    }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-darker); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; opacity: 0.6; }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center;'> AI Based Cyber Threat Detection & Classification System</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #8b949e;'>Autonomous Intrusion Intelligence & Incident Response Pipeline • Powered by Machine Learning</p>", unsafe_allow_html=True)
+st.markdown("""
+<div style="text-align:center;">
+  <h1 style="margin-bottom:4px;"> AI Based Cyber Threat Detection & Classification System</h1>
+  <p style="color: var(--text-secondary); font-family:'JetBrains Mono',monospace; font-size:13px;">
+    <span style="color:#639922;">●</span> LIVE &nbsp;|&nbsp; Autonomous Intrusion Intelligence & Incident Response Pipeline &nbsp;|&nbsp; Powered by Machine Learning
+  </p>
+</div>
+""", unsafe_allow_html=True)
 st.write("---")
 
 # ─────────────────────────────────────────────
@@ -75,35 +178,35 @@ def get_mitre_intelligence(threat_name):
     if "phish" in t_lower:
         return {"id": "T1566 (MITRE ATT&CK)", "vector": "Initial Access / Social Engineering", "severity": "CRITICAL",
                 "tactic": "Initial Access",
-                "impact": "Credential harvesting, unauthorized system entry, deployment of secondary remote access malware vectors.", "color": "#f85149"}
+                "impact": "Credential harvesting, unauthorized system entry, deployment of secondary remote access malware vectors.", "color": "#E24B4A"}
     elif "ddos" in t_lower or "spike" in t_lower or "anomaly" in t_lower or "dos" in t_lower:
         return {"id": "T1498 (MITRE ATT&CK)", "vector": "Impact / Network Denial of Service", "severity": "HIGH",
                 "tactic": "Impact",
-                "impact": "Resource exhaustion, connection flooding, disruption of stateful service operations across edge gateways.", "color": "#ff9e3b"}
+                "impact": "Resource exhaustion, connection flooding, disruption of stateful service operations across edge gateways.", "color": "#BA7517"}
     elif "scan" in t_lower or "portscan" in t_lower:
         return {"id": "T1595 (MITRE ATT&CK)", "vector": "Reconnaissance / Active Scanning", "severity": "MEDIUM",
                 "tactic": "Reconnaissance",
-                "impact": "Network topology mapping, open port discovery, operating system fingerprinting by external adversarial actors.", "color": "#e3b341"}
+                "impact": "Network topology mapping, open port discovery, operating system fingerprinting by external adversarial actors.", "color": "#639922"}
     elif "bot" in t_lower:
         return {"id": "T1071 (MITRE ATT&CK)", "vector": "Command & Control / Application Layer Protocol", "severity": "HIGH",
                 "tactic": "Command and Control",
-                "impact": "Botnet C2 communication, data exfiltration, persistent remote control of compromised endpoints.", "color": "#ff9e3b"}
+                "impact": "Botnet C2 communication, data exfiltration, persistent remote control of compromised endpoints.", "color": "#BA7517"}
     elif "brute" in t_lower:
         return {"id": "T1110 (MITRE ATT&CK)", "vector": "Credential Access / Brute Force", "severity": "HIGH",
                 "tactic": "Credential Access",
-                "impact": "Automated credential stuffing attacks targeting authentication services and privileged accounts.", "color": "#ff9e3b"}
+                "impact": "Automated credential stuffing attacks targeting authentication services and privileged accounts.", "color": "#BA7517"}
     elif "infiltrat" in t_lower or "exfil" in t_lower:
         return {"id": "T1041 (MITRE ATT&CK)", "vector": "Exfiltration / Over C2 Channel", "severity": "CRITICAL",
                 "tactic": "Exfiltration",
-                "impact": "Sensitive data exfiltration over existing command and control channels bypassing DLP controls.", "color": "#f85149"}
+                "impact": "Sensitive data exfiltration over existing command and control channels bypassing DLP controls.", "color": "#E24B4A"}
     elif "web attack" in t_lower or "sql" in t_lower or "xss" in t_lower:
         return {"id": "T1190 (MITRE ATT&CK)", "vector": "Initial Access / Exploit Public-Facing Application", "severity": "CRITICAL",
                 "tactic": "Initial Access",
-                "impact": "Exploitation of web application vulnerabilities including SQL injection and cross-site scripting attacks.", "color": "#f85149"}
+                "impact": "Exploitation of web application vulnerabilities including SQL injection and cross-site scripting attacks.", "color": "#E24B4A"}
     else:
         return {"id": "T1046 (MITRE ATT&CK)", "vector": "Discovery / Network Service Scanning", "severity": "MEDIUM",
                 "tactic": "Discovery",
-                "impact": "Adversarial analysis of network interfaces to trace proprietary protocol weaknesses.", "color": "#e3b341"}
+                "impact": "Adversarial analysis of network interfaces to trace proprietary protocol weaknesses.", "color": "#639922"}
 
 SEVERITY_WEIGHT = {"CRITICAL": 100, "HIGH": 70, "MEDIUM": 40, "LOW": 20}
 
@@ -335,7 +438,7 @@ def render_attack_chain_tab(chains: dict):
                         [{tactic_idx}] {ev['tactic'].upper()}
                     </span>
                     &nbsp;|&nbsp;
-                    <span style="color:#58a6ff;">{ev['mitre_id']}</span>
+                    <span style="color:#58a6ff;font-family:'Courier New',monospace;">{ev['mitre_id']}</span>
                     &nbsp;|&nbsp;
                     <span style="color:#8b949e;">{ev['time']}</span>
                     <br>
@@ -435,7 +538,7 @@ def render_shap_section(shap_results, flagged_df: pd.DataFrame):
             fig, ax = plt.subplots(figsize=(7, 3.5))
             fig.patch.set_facecolor('#06090f')
             ax.set_facecolor('#06090f')
-            colors = ['#f85149' if v > np.mean(feat_vals) else '#58a6ff' for v in feat_vals]
+            colors = ['#E24B4A' if v > np.mean(feat_vals) else '#58a6ff' for v in feat_vals]
             bars   = ax.barh(feat_names[::-1], feat_vals[::-1], color=colors[::-1])
             ax.set_xlabel("Mean |SHAP Value|  (impact on model output)", color='#8b949e')
             ax.tick_params(colors='#c9d1d9', labelsize=9)
@@ -983,12 +1086,12 @@ def generate_pdf_report(total, safe, threats, threat_types, accuracy, top_source
 # REAL-TIME THREAT GAUGE + TREND LINE (Plotly)
 # ─────────────────────────────────────────────
 def render_threat_gauge(score, previous_score=0):
-    bar_color = "#3fb950" if score < 30 else ("#e3b341" if score < 60 else "#f85149")
+    bar_color = "#639922" if score < 30 else ("#BA7517" if score < 60 else "#E24B4A")
     fig = go.Figure(go.Indicator(
         mode="gauge+number+delta",
         value=score,
         number={'suffix': " / 100", 'font': {'color': bar_color, 'size': 36}},
-        delta={'reference': previous_score, 'increasing': {'color': '#f85149'}, 'decreasing': {'color': '#3fb950'}},
+        delta={'reference': previous_score, 'increasing': {'color': '#E24B4A'}, 'decreasing': {'color': '#639922'}},
         title={'text': "LIVE THREAT LEVEL", 'font': {'color': '#58a6ff', 'size': 18}},
         gauge={
             'axis': {'range': [0, 100], 'tickcolor': '#8b949e', 'tickfont': {'color': '#8b949e'}},
@@ -999,7 +1102,7 @@ def render_threat_gauge(score, previous_score=0):
                 {'range': [30, 60],  'color': 'rgba(227,179,65,0.22)'},
                 {'range': [60, 100], 'color': 'rgba(248,81,73,0.22)'},
             ],
-            'threshold': {'line': {'color': '#f85149', 'width': 3}, 'thickness': 0.85, 'value': score},
+            'threshold': {'line': {'color': '#E24B4A', 'width': 3}, 'thickness': 0.85, 'value': score},
         }
     ))
     fig.update_layout(paper_bgcolor='#06090f', font={'color': '#c9d1d9', 'family': 'Courier New'},
@@ -1017,13 +1120,13 @@ def render_threat_trend(history):
         x=xs, y=ys, mode='lines+markers', name='Threat Score',
         line=dict(color='#58a6ff', width=3, shape='spline', smoothing=1.1),
         fill='tozeroy', fillcolor='rgba(88,166,255,0.16)',
-        marker=dict(size=7, color=ys, colorscale=[[0, '#3fb950'], [0.5, '#e3b341'], [1, '#f85149']],
+        marker=dict(size=7, color=ys, colorscale=[[0, '#639922'], [0.5, '#BA7517'], [1, '#E24B4A']],
                     cmin=0, cmax=100, line=dict(width=1, color='#06090f')),
         hovertemplate='Elapsed: %{x}s<br>Threat Score: %{y:.1f}<extra></extra>'
     ))
-    fig.add_hline(y=30, line_dash='dot', line_color='#3fb950', opacity=0.6, annotation_text='SAFE',     annotation_font_color='#3fb950')
-    fig.add_hline(y=60, line_dash='dot', line_color='#e3b341', opacity=0.6, annotation_text='WARNING',  annotation_font_color='#e3b341')
-    fig.add_hline(y=85, line_dash='dot', line_color='#f85149', opacity=0.6, annotation_text='CRITICAL', annotation_font_color='#f85149')
+    fig.add_hline(y=30, line_dash='dot', line_color='#639922', opacity=0.6, annotation_text='SAFE',     annotation_font_color='#639922')
+    fig.add_hline(y=60, line_dash='dot', line_color='#BA7517', opacity=0.6, annotation_text='WARNING',  annotation_font_color='#BA7517')
+    fig.add_hline(y=85, line_dash='dot', line_color='#E24B4A', opacity=0.6, annotation_text='CRITICAL', annotation_font_color='#E24B4A')
     fig.update_layout(
         title=dict(text='📈 Live Threat Score Trend', font=dict(color='#58a6ff', size=16)),
         paper_bgcolor='#06090f', plot_bgcolor='#06090f', font=dict(color='#c9d1d9'), height=320,
@@ -1101,7 +1204,7 @@ def display_analysis_results(metadata_df, model, scaler, feature_names, accuracy
             fig.patch.set_facecolor('#06090f'); ax.set_facecolor('#06090f')
             ax.pie([benign_count, malicious_count],
                    labels=['Verified Base', 'Threat Vector'],
-                   autopct='%1.1f%%', colors=['#388bfd', '#f85149'],
+                   autopct='%1.1f%%', colors=['#388bfd', '#E24B4A'],
                    textprops={'color': 'w', 'weight': 'bold'})
             st.pyplot(fig); plt.close(fig)
         with g2:
@@ -1135,11 +1238,11 @@ def display_analysis_results(metadata_df, model, scaler, feature_names, accuracy
             for threat in metadata_df[malicious_mask]['Hybrid_Label'].unique():
                 intel = get_mitre_intelligence(threat)
                 st.markdown(f"""
-                <div style="border:1px solid #30363d;background:#0d1117;padding:20px;border-radius:8px;margin-bottom:15px;">
-                    <span style="background:{intel['color']};color:#06090f;padding:3px 8px;border-radius:4px;font-weight:bold;font-size:12px;">{intel['severity']} THREAT DETECTED</span>
-                    <h3 style="margin:10px 0 5px 0;color:#58a6ff !important;">Target Signature: {threat}</h3>
-                    <p style="margin:0;font-size:14px;color:#8b949e;"><b>Framework:</b> {intel['id']} — {intel['vector']}</p>
-                    <p style="margin:10px 0 0 0;font-size:14px;color:#c9d1d9;"><b>Impact:</b> {intel['impact']}</p>
+                <div style="border:0.5px solid rgba(255,255,255,0.1);background:var(--bg-dark);padding:20px;border-radius:8px;margin-bottom:15px;">
+                    <span style="background:var(--critical);color:#06090f;padding:3px 8px;border-radius:4px;font-weight:bold;font-size:12px;">{intel['severity']} THREAT DETECTED</span>
+                    <h3 style="margin:10px 0 5px 0;color:var(--accent) !important;">Target Signature: {threat}</h3>
+                    <p style="margin:0;font-size:14px;color:var(--text-secondary);"><b>Framework:</b> <code style="font-family:'Courier New',monospace;color:var(--text-secondary);">{intel['id']}</code> — {intel['vector']}</p>
+                    <p style="margin:10px 0 0 0;font-size:14px;color:var(--text-primary);"><b>Impact:</b> {intel['impact']}</p>
                 </div>""", unsafe_allow_html=True)
 
             # ── UPGRADE 3: LLM Narrative button ──
@@ -1208,9 +1311,9 @@ def display_analysis_results(metadata_df, model, scaler, feature_names, accuracy
         if eval_metrics.get("has_ground_truth"):
             acc_val = eval_metrics["accuracy"]
             st.markdown(f"""
-            <div style="border:1px solid #30363d;background:#0d1117;padding:18px;border-radius:8px;margin-bottom:15px;">
-                <span style="background:#3fb950;color:#06090f;padding:3px 8px;border-radius:4px;font-weight:bold;font-size:12px;">GROUND TRUTH FOUND</span>
-                <p style="color:#c9d1d9;margin:10px 0 0 0;">Detection method: <b>{eval_metrics['method']}</b>.
+            <div style="border:0.5px solid rgba(255,255,255,0.1);background:var(--bg-dark);padding:18px;border-radius:8px;margin-bottom:15px;">
+                <span style="background:var(--safe);color:#06090f;padding:3px 8px;border-radius:4px;font-weight:bold;font-size:12px;">GROUND TRUTH FOUND</span>
+                <p style="color:var(--text-primary);margin:10px 0 0 0;">Detection method: <b>{eval_metrics['method']}</b>.
                 Accuracy computed directly from <code>sklearn.metrics.accuracy_score</code> —
                 a real measured value, not an assumed constant.</p>
             </div>""", unsafe_allow_html=True)
@@ -1236,18 +1339,18 @@ def display_analysis_results(metadata_df, model, scaler, feature_names, accuracy
 
         elif eval_metrics.get("confidence_only"):
             st.markdown(f"""
-            <div style="border:1px solid #30363d;background:#0d1117;padding:18px;border-radius:8px;">
-                <span style="background:#e3b341;color:#06090f;padding:3px 8px;border-radius:4px;font-weight:bold;font-size:12px;">NO GROUND TRUTH IN FILE</span>
-                <p style="color:#c9d1d9;margin:10px 0 0 0;">Detection method: <b>{eval_metrics['method']}</b>.
+            <div style="border:0.5px solid rgba(255,255,255,0.1);background:var(--bg-dark);padding:18px;border-radius:8px;">
+                <span style="background:var(--high);color:#06090f;padding:3px 8px;border-radius:4px;font-weight:bold;font-size:12px;">NO GROUND TRUTH IN FILE</span>
+                <p style="color:var(--text-primary);margin:10px 0 0 0;">Detection method: <b>{eval_metrics['method']}</b>.
                 The number below is the classifier's average prediction confidence — useful as a
                 trust signal, but <b>not</b> the same as measured accuracy.</p>
             </div>""", unsafe_allow_html=True)
             st.metric("Average Model Confidence", f"{accuracy*100:.2f}%" if accuracy else "N/A")
         else:
             st.markdown(f"""
-            <div style="border:1px solid #30363d;background:#0d1117;padding:18px;border-radius:8px;">
-                <span style="background:#8b949e;color:#06090f;padding:3px 8px;border-radius:4px;font-weight:bold;font-size:12px;">NO BENCHMARK AVAILABLE</span>
-                <p style="color:#c9d1d9;margin:10px 0 0 0;">Upload a labeled CSV to get a real measured score here.</p>
+            <div style="border:0.5px solid rgba(255,255,255,0.1);background:var(--bg-dark);padding:18px;border-radius:8px;">
+                <span style="background:var(--high);color:#06090f;padding:3px 8px;border-radius:4px;font-weight:bold;font-size:12px;">NO BENCHMARK AVAILABLE</span>
+                <p style="color:var(--text-primary);margin:10px 0 0 0;">Upload a labeled CSV to get a real measured score here.</p>
             </div>""", unsafe_allow_html=True)
 
         # ── UPGRADE 4: SHAP Explainability ──
@@ -1323,9 +1426,9 @@ if mode == "📂 Upload Security Log File":
 # ═══════════════════════════════════════════════
 else:
     st.markdown("""
-    <div style="background:rgba(255,158,59,0.1);border-left:4px solid #ff9e3b;border-radius:4px;padding:10px 15px;margin-bottom:15px;">
-        ⚠️ <b style="color:#ff9e3b;">Important:</b>
-        <span style="color:#c9d1d9;">Run VS Code / Terminal as <b>Administrator</b> and ensure
+    <div style="background:var(--bg-dark);border-left:2px solid var(--critical);border-radius:4px;padding:10px 15px;margin-bottom:15px;">
+        ⚠️ <b style="color:var(--critical);">Important:</b>
+        <span style="color:var(--text-primary);">Run VS Code / Terminal as <b>Administrator</b> and ensure
         <b>Npcap</b> is installed (npcap.com) with WinPcap compatibility ON,
         otherwise 0 packets will be captured.</span>
     </div>
@@ -1494,9 +1597,9 @@ else:
             st.session_state['capture_running'] = False
             st.session_state['capture_done']    = True
             st.markdown("""
-            <div style="background:rgba(248,81,73,0.1);border-left:4px solid #f85149;border-radius:8px;padding:20px;">
-                <h4 style="color:#f85149;">☁️ Cloud Environment Detected</h4>
-                <p style="color:#c9d1d9;">Live packet capture requires Administrator privileges and Npcap.<br>
+            <div style="background:var(--bg-dark);border-left:2px solid var(--critical);border-radius:8px;padding:20px;">
+                <h4 style="color:var(--critical);">☁️ Cloud Environment Detected</h4>
+                <p style="color:var(--text-primary);">Live packet capture requires Administrator privileges and Npcap.<br>
                 Run locally as Administrator, or switch to Upload mode for cloud demos.</p>
             </div>""", unsafe_allow_html=True)
             st.stop()
@@ -1527,8 +1630,8 @@ else:
         if st.session_state.get('capture_error'):
             st.warning("⚠️ Capture completed with issues.")
             st.markdown("""
-            <div style="background:#0d1117;border:1px solid #f85149;border-radius:8px;padding:20px;margin-top:10px;">
-                <h4 style="color:#f85149;margin:0 0 10px 0;">🔧 Troubleshooting Checklist</h4>
+            <div style="background:#0d1117;border:0.5px solid rgba(255,255,255,0.1);border-radius:8px;padding:20px;margin-top:10px;">
+                <h4 style="color:#E24B4A;margin:0 0 10px 0;">🔧 Troubleshooting Checklist</h4>
                 <ol style="color:#c9d1d9;font-size:14px;line-height:2;">
                     <li>✅ <b>Run VS Code / Terminal as Administrator</b></li>
                     <li>✅ <b>Npcap installed</b> from <a href="https://npcap.com" style="color:#58a6ff;">npcap.com</a> with WinPcap compatibility ON</li>
@@ -1555,9 +1658,9 @@ else:
 
     elif not st.session_state['capture_running'] and not st.session_state['capture_done']:
         st.markdown("""
-        <div style="background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:25px;text-align:center;">
-            <h3 style="color:#58a6ff;">📡 Ready to Capture</h3>
-            <p style="color:#8b949e;">Select interface, set duration, click START.<br>
+        <div style="background:var(--bg-dark);border:0.5px solid rgba(255,255,255,0.1);border-radius:8px;padding:25px;text-align:center;">
+            <h3 style="color:var(--accent);">📡 Ready to Capture</h3>
+            <p style="color:var(--text-secondary);">Select interface, set duration, click START.<br>
             Watch the live threat meter and trend line update every few seconds as traffic is analysed.<br>
             Uses native Python Scapy — no external tools required.</p>
         </div>""", unsafe_allow_html=True)
